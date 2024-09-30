@@ -9,7 +9,7 @@
 #include <QThread>
 #include <QColor>
 
-#include <QDebug>
+// #include <QDebug>
 
 Model::Model(QObject *parent)
     : QAbstractTableModel{parent}
@@ -108,20 +108,6 @@ Qt::ItemFlags Model::flags(const QModelIndex &index) const
     return Qt::NoItemFlags;
 }
 
-// bool Model::insertRows(int row, int count, const QModelIndex &parent)
-// {
-//     if (!parent.isValid())
-//         return false;
-//     beginInsertRows(parent, row, row+count-1 );
-//     for ( int i = 0; i < count; ++i ) {
-//         if (row == m_nData.count())
-//             m_nData.append(new FigureData());
-
-//     }
-//     endInsertRows();
-//     return true;
-// }
-
 QVariant Model::getType(const QModelIndex &index, int role) const
 {
     if ( role == Qt::DisplayRole ) {
@@ -217,8 +203,7 @@ QVariant Model::getVisible(const QModelIndex &index, int role) const
 void Model::insertFigureData(QByteArray datagram)
 {
     beginInsertRows(index(this->rowCount()+1,0),this->rowCount()+1,this->rowCount()+1);
-    qDebug() << "beginInsertRows";
-    // m_nData.append( new FigureData(datagram));
+    m_nData.append( new FigureData(datagram));
     endInsertRows();
-    qDebug() << "endInsertRows";
+    emit insertedFigureEvent(*m_nData.last());
 }

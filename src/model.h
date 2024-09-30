@@ -41,6 +41,8 @@ private:
 
 public slots:
     void insertFigureData(QByteArray);
+signals:
+    void insertedFigureEvent(const FigureData &fd);
 };
 
 #endif // MODEL_H

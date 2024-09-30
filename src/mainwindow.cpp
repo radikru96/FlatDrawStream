@@ -34,6 +34,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     setMinimumSize(160, 160);
     resize(480, 320);
+
+    connect(model,SIGNAL(insertedFigureEvent(FigureData)),fv,SLOT(addItemEvent(FigureData)));
 }
 
 void MainWindow::rendering()

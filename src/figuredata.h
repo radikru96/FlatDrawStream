@@ -24,7 +24,7 @@ private:
 public:
 
     FigureData(QFigureType type, QColor *color, QVector<QPoint>* points);
-    // FigureData(QByteArray &data);
+    FigureData(QByteArray &data);
 
     const static quint64 getCount();
 

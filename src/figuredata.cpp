@@ -7,18 +7,45 @@
 #include <QPoint>
 #include <flatbuffers/flatbuffers.h>
 #include <flatbuffers/util.h>
-#include <QString>
-
-#include <QDebug>
 
 quint64 FigureData::count=0;
 
 FigureData::FigureData(QFigureType type, QColor *color, QVector<QPoint> *points):
     type(type), color(color), id(count++), points(points) {}
 
-// FigureData::FigureData(QByteArray &data) : id(count++)
-// {
-// }
+FigureData::FigureData(QByteArray &data) : id(count++)
+{
+    auto buffer = flatbuffers::GetRoot<Figure>(data.constData());
+    type = static_cast<QFigureType>( buffer->type() );
+    auto payload = QByteArray::fromRawData(buffer->payload()->c_str(),buffer->payload()->size());
+    switch (type) {
+    case QFigureType::Rect: {
+        auto fd = flatbuffers::GetRoot<RectData>(payload.constData());
+        points = new QVector<QPoint>{QPoint(fd->x(),fd->y() ),
+                                     QPoint( fd->width(),fd->height() )};
+        color = new QColor( fd->color_hex()->c_str() );
+        break; }
+    case QFigureType::Ellipse: {
+        auto fd = flatbuffers::GetRoot<EllipseData>(payload.constData());
+        points = new QVector<QPoint>{QPoint(fd->x(),fd->y() ),
+                                     QPoint( fd->r1(),fd->r2() )};
+        color = new QColor( fd->color_hex()->c_str() );
+        break; }
+    case QFigureType::Triangle: {
+        auto fd = flatbuffers::GetRoot<TriangleData>(payload.constData());
+        points = new QVector<QPoint>{QPoint(fd->x1(),fd->y1() ),
+                                     QPoint( fd->x2(),fd->y2() ),
+                                     QPoint( fd->x3(),fd->y3() )};
+        color = new QColor( fd->color_hex()->c_str() );
+        break; }
+    case QFigureType::Line: {
+        auto fd = flatbuffers::GetRoot<LineData>(payload.constData());
+        points = new QVector<QPoint>{QPoint(fd->x1(),fd->y1() ),
+                                     QPoint( fd->x2(),fd->y2() )};
+        color = new QColor( fd->color_hex()->c_str() );
+        break; }
+    }
+}
 
 
 const quint64 FigureData::getCount()
