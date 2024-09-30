@@ -10,18 +10,24 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Core Network)
 
 set(PROJECT_SOURCES
-        main.cpp
-        widget.cpp
-        widget.h
+        src/main.cpp
+        src/mainwindow.cpp
+        src/mainwindow.h
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(FlatDrawStream
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
+        src/model.h src/model.cpp
+        src/figuredata.h src/figuredata.cpp
+        src/figureview.h src/figureview.cpp
+        src/figureitem.h src/figureitem.cpp
+        src/defines.h
+        src/flatstream.h src/flatstream.cpp
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET FlatDrawStream APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
@@ -41,7 +47,7 @@ else()
     endif()
 endif()
 
-target_link_libraries(FlatDrawStream PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
+target_link_libraries(FlatDrawStream PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Network)
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
 # If you are developing for iOS or macOS you should consider setting an
