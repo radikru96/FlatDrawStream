@@ -2,6 +2,7 @@
 #define MODEL_H
 
 #include <QAbstractTableModel>
+#include "defines.h"
 
 class QThread;
 class FigureData;
@@ -11,13 +12,6 @@ class Model : public QAbstractTableModel
 {
     Q_OBJECT
 public:
-    enum Columns {
-        Id,
-        Type,
-        Position,
-        Region,
-        Visible
-    };
     explicit Model(QObject *parent = nullptr);
     ~Model();
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
@@ -38,6 +32,7 @@ private:
     QVariant getRegion(const QModelIndex &index, int role) const;
     QVariant getPoints(const QModelIndex &index, int role) const;
     QVariant getVisible(const QModelIndex &index, int role) const;
+    // QVariant getDelete(const QModelIndex &index, int role) const;
 
 public slots:
     void insertFigureData(QByteArray);

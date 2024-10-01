@@ -9,4 +9,13 @@ enum QFigureType: quint8
     Line
 };
 
+enum Columns {
+    Id,
+    Type,
+    Position,
+    Region,
+    Visible,
+    Delete
+};
+
 #endif // DEFINES_H
