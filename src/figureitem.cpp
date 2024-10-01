@@ -54,7 +54,7 @@ QRectF FigureItem::getBoundingRect() const
 
 void FigureItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-    painter->setPen(QPen(color, 2));
+    painter->setPen(QPen(color, 0));
     painter->setBrush(QBrush(color));
     switch (type) {
     case QFigureType::Rect:
