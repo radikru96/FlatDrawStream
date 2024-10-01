@@ -20,24 +20,17 @@ void FigureView::setModel(Model *model)
     this->model = model;
     scene->clear();
     for ( int row = 0; row < model->rowCount(); ++row ) {
-        // FigureData* figureData = static_cast<FigureData*>( model->data(model->index(row,0), Qt::UserRole).value<void*>() );
         if ( !figureData->getVisible() )
             continue;
-        // addItem(*figureData);
-        addItem(static_cast<FigureData>( model->data(model->index(row,0), Qt::UserRole).value<void*>() ););
+        addItemEvent(static_cast<FigureData>( model->data(model->index(row,0), Qt::UserRole).value<void*>() ) );
     }
 }
 
-void FigureView::addItem(const FigureData &fd)
+void FigureView::addItemEvent(const FigureData &fd)
 {
     item->append( new FigureItem( fd.getType(), fd.getColor(), fd.getPoints() ) );
     item->last()->setFlags(FigureItem::ItemIsMovable);
     scene->addItem(item->last());
     repaint();
-}
-
-void FigureView::addItemEvent(const FigureData &fd)
-{
-    addItem(fd);
 }
 
