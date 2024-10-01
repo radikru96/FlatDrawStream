@@ -14,14 +14,18 @@ class FigureView : public QGraphicsView {
 public:
     explicit FigureView(QWidget *parent = nullptr);
     void setModel(Model *model);
+
+private:
+    void addItem(const FigureData &fd);
+
+public slots:
+    void addItemEvent(const FigureData &fd);
+
 protected:
     QGraphicsScene *scene = new QGraphicsScene();
     Model *model = nullptr;
     QVector<FigureItem*>* item;
 
-    // void paintEvent(QPaintEvent* event = nullptr);
-public slots:
-    void addItemEvent(const FigureData &fd);
 };
 
 #endif // FIGUREVIEW_H
