@@ -22,13 +22,6 @@ Model::Model(QObject *parent)
     connect(flatStreamThread,&QThread::finished, flatStream, &QObject::deleteLater);
     connect(flatStream,SIGNAL(hasPendingDatagram(QByteArray)),SLOT(insertFigureData(QByteArray)));
     flatStreamThread->start();
-
-    m_nData.append( new FigureData( QFigureType::Line, new QColor(Qt::darkRed), new QVector<QPoint>{QPoint(0,0),QPoint(100,100)} ) );
-    m_nData.append( new FigureData( QFigureType::Rect, new QColor(Qt::darkBlue), new QVector<QPoint>{QPoint(0,10),QPoint(40,20)} ) );
-    m_nData.append( new FigureData( QFigureType::Ellipse, new QColor(Qt::darkGreen), new QVector<QPoint>{QPoint(40,10),QPoint(20,30)} ) );
-    m_nData.append( new FigureData( QFigureType::Triangle, new QColor(Qt::magenta), new QVector<QPoint>{QPoint(0,100),
-                                                                                           QPoint(100,100),
-                                                                                           QPoint(50,25) } ) );
 }
 
 Model::~Model()
