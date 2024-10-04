@@ -8,6 +8,7 @@
 #include <QStringList>
 #include <QThread>
 #include <QColor>
+#include <QButtonGroup>
 
 // #include <QDebug>
 
@@ -20,7 +21,6 @@ Model::Model(QObject *parent)
     flatStream->moveToThread(flatStreamThread);
     connect(flatStreamThread,&QThread::finished, flatStream, &QObject::deleteLater);
     connect(flatStream,SIGNAL(hasPendingDatagram(QByteArray)),SLOT(insertFigureData(QByteArray)));
-    // signals and slots need connect betwen this and flatStream, to data(FigureData) insert in model.
     flatStreamThread->start();
 
     m_nData.append( new FigureData( QFigureType::Line, new QColor(Qt::darkRed), new QVector<QPoint>{QPoint(0,0),QPoint(100,100)} ) );
@@ -47,35 +47,19 @@ int Model::columnCount(const QModelIndex &parent) const
     return 6;
 }
 
-bool Model::setData(const QModelIndex &index, const QVariant &value, int role)
-{
-    if ( index.isValid() ){
-        FigureData* p = m_nData[index.row()];
-        switch (static_cast<Columns>(index.column())) {
-        case Visible:
-            p->setVisible( p->getVisible() ? false : true );
-            emit dataChanged(index,index);
-            return true;
-            break;
-            // case 5:
-            //     return true;
-        }
-    }
-    return false;
-}
-
 QVariant Model::data(const QModelIndex &index, int role) const
 {
     if ( !index.isValid() || ( role != Qt::DisplayRole && role != Qt::UserRole ) )
         return QVariant();
     if ( role == Qt::UserRole )
         return QVariant(QVariant::fromValue( static_cast<void*>(m_nData[index.row()])));
+
     switch (static_cast<Columns>(index.column())) {
         case Id: return m_nData[index.row()]->getId();
         case Type: return getType(index,role);
         case Position: return getPosition(index,role);
         case Region: return getRegion(index,role);
-        case Visible: return getVisible(index,role);
+        case Visible: return m_nData[index.row()]->getVisible();
     }
     return QVariant();
 }
@@ -87,25 +71,40 @@ QVariant Model::headerData(int section, Qt::Orientation orientation, int role) c
     return m_Headers[section];
 }
 
-Qt::ItemFlags Model::flags(const QModelIndex &index) const
+QColor Model::getColor(const QModelIndex &index) const
+{
+    return m_nData[index.row()]->getColor();
+}
+
+bool Model::setData(const QModelIndex &index, const QVariant &value, int role)
 {
     if ( index.isValid() ){
-        switch (static_cast<Columns>(index.column())) {
-        // case Id:
-        // case Type:
-        // case Region:
-        //     return Qt::ItemIsSelectable;
-        //     break;
-        // case Position:
-        //     return Qt::ItemIsSelectable | Qt::ItemIsEditable;
-        //     break;
-        case Visible:
-        case 5:
-            return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
-            break;
+        FigureData* p = m_nData[index.row()];
+        if (static_cast<Columns>(index.column()) == Visible) {
+            p->setVisible( value.toBool() );
+            emit visibleChanged(index);
+            emit dataChanged(index,index);
+            return true;
         }
     }
-    return Qt::NoItemFlags;
+    return false;
+}
+
+bool Model::removeRow(int row, const QModelIndex &parent)
+{
+    return removeRows(row,1,parent);
+}
+
+bool Model::removeRows(int row, int count, const QModelIndex &parent)
+{
+    if (!parent.isValid())
+        return false;
+    beginRemoveRows(parent,row,row+count-1);
+    m_nData.remove(row,count);
+    endRemoveRows();
+    emit rowRemoved(parent);
+    emit dataChanged(index(row,0),index(row,columnCount()));
+    return true;
 }
 
 QVariant Model::getType(const QModelIndex &index, int role) const
@@ -191,13 +190,6 @@ QVariant Model::getPoints(const QModelIndex &index, int role) const
         val.append(i);
     }
     return QVariant( val );
-}
-
-QVariant Model::getVisible(const QModelIndex &index, int role) const
-{
-    if ( role == Qt::DisplayRole )
-        return static_cast<bool>(m_nData[index.row()]->getVisible()) ? "True" : "False";
-    return m_nData[index.row()]->getVisible();
 }
 
 void Model::insertFigureData(QByteArray datagram)

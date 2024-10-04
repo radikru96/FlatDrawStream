@@ -18,12 +18,6 @@ set(PROJECT_SOURCES
         src/main.cpp
         src/mainwindow.cpp
         src/mainwindow.h
-)
-
-if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
-    qt_add_executable(FlatDrawStream
-        MANUAL_FINALIZATION
-        ${PROJECT_SOURCES}
         src/model.h src/model.cpp
         src/figuredata.h src/figuredata.cpp
         src/figureview.h src/figureview.cpp
@@ -31,6 +25,12 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         src/defines.h
         src/flatstream.h src/flatstream.cpp
         src/delegatebutton.h src/delegatebutton.cpp
+)
+
+if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
+    qt_add_executable(FlatDrawStream
+        MANUAL_FINALIZATION
+        ${PROJECT_SOURCES}
     )
 
 # Define target properties for Android with Qt 6 as:
@@ -51,14 +51,12 @@ else()
     endif()
 endif()
 
-qt_add_resources(my_app "app_images"
-    PREFIX "/images/"
-    FILES
-        v.png
-        x.png
+qt_add_resources(FlatDrawStream "images"
+    PREFIX "/"
+    FILES images/v.png images/x.png
 )
 
-target_link_libraries(FlatDrawStream PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Network Qt${QT_VERSION_MAJOR}::Gui)
+target_link_libraries(FlatDrawStream PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Network Qt${QT_VERSION_MAJOR}::Gui )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
 # If you are developing for iOS or macOS you should consider setting an

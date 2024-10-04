@@ -8,27 +8,29 @@
 FigureItem::FigureItem(const QFigureType &type, const QColor &color, QVector<QPoint> *points, QGraphicsItem *parent)
     : QGraphicsItem(parent), type(type), color(color)
 {
-    for ( auto i: *points) {
+    for ( auto i: qAsConst(*points)) {
         this->points.append(i);
     }
 }
 
 QRectF FigureItem::boundingRect() const
 {
-    switch (type) {
-    case QFigureType::Rect:
-        if (points.size() >= 2)
-            return QRectF( points[0], points[1]+points[0] );
-        break;
-    case QFigureType::Ellipse:
-        if (points.size() >= 2)
-            return QRectF(QRect( QPoint(points[0].x()-points[1].x()
-                                       ,points[0].y()-points[1].y() )
-                                ,QSize(points[1].x()*2, points[1].y()*2) ));
-        break;
-    default:
-        return getBoundingRect();
-        break;
+    if (color != QColor(Qt::transparent)){
+        switch (type) {
+        case QFigureType::Rect:
+            if (points.size() >= 2)
+                return QRectF( points[0], points[1]+points[0] );
+            break;
+        case QFigureType::Ellipse:
+            if (points.size() >= 2)
+                return QRectF(QRect( QPoint(points[0].x()-points[1].x()
+                                           ,points[0].y()-points[1].y() )
+                                    ,QSize(points[1].x()*2, points[1].y()*2) ));
+            break;
+        default:
+            return getBoundingRect();
+            break;
+        }
     }
     return QRectF();
 }
@@ -50,6 +52,11 @@ QRectF FigureItem::getBoundingRect() const
             min.setY( points[i].y() );
     }
     return QRectF(min,max);
+}
+
+void FigureItem::setColor(const QColor &newColor)
+{
+    color = newColor;
 }
 
 void FigureItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)

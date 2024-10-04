@@ -20,11 +20,12 @@ private:
 
 public slots:
     void addItemEvent(const FigureData &fd);
+    void repaintEvent(const QModelIndex &topLeft);
 
 protected:
     QGraphicsScene *scene = new QGraphicsScene();
     Model *model = nullptr;
-    QVector<FigureItem*>* item;
+    QVector<FigureItem*> *item;
 
 };
 

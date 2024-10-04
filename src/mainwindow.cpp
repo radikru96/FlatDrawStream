@@ -2,6 +2,7 @@
 
 #include "model.h"
 #include "figureview.h"
+#include "delegatebutton.h"
 
 #include <QMenuBar>
 #include <QKeySequence>
@@ -21,6 +22,11 @@ MainWindow::MainWindow(QWidget *parent)
     tv->verticalHeader()->hide();
     tv->resizeColumnsToContents();
 
+    auto *delegate = new DelegateButton();
+    tv->setItemDelegateForColumn(Columns::Visible,delegate);
+    tv->setItemDelegateForColumn(Columns::Delete,delegate);
+
+
     fv = new FigureView();
     fv->setModel(model);
 
@@ -35,7 +41,9 @@ MainWindow::MainWindow(QWidget *parent)
     setMinimumSize(160, 160);
     resize(480, 320);
 
-    connect(model,SIGNAL(insertedFigureEvent(FigureData)),fv,SLOT(addItemEvent(FigureData)));
+    connect(model, SIGNAL(insertedFigureEvent(FigureData)), fv, SLOT(addItemEvent(FigureData)) );
+    connect(model, SIGNAL(visibleChanged(QModelIndex)), fv, SLOT(repaintEvent(QModelIndex)) );
+    connect(model, SIGNAL(rowRemoved(QModelIndex)), fv, SLOT(repaintEvent(QModelIndex)) );
 }
 
 void MainWindow::rendering()
