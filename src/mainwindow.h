@@ -26,5 +26,7 @@ private:
     QStackedLayout *sl;
     QTableView *tv;
     FigureView *fv;
+public slots:
+    void figureMoved();
 };
 #endif // MAINWINDOW_H

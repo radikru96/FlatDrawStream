@@ -44,6 +44,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(model, SIGNAL(insertedFigureEvent(FigureData*)), fv, SLOT(addItemEvent(FigureData*)) );
     connect(model, SIGNAL(visibleChanged(QModelIndex)), fv, SLOT(repaintEvent(QModelIndex)) );
     connect(model, SIGNAL(rowRemoved(QModelIndex)), fv, SLOT(repaintEvent(QModelIndex)) );
+    connect(model, SIGNAL(figureMoved()),SLOT(figureMoved()));
 }
 
 void MainWindow::rendering()
@@ -72,4 +73,9 @@ void MainWindow::createMenus()
     menu = menuBar()->addMenu(tr("&Menu"));
     menu->addAction(renderingAct);
     menu->addAction(infoAct);
+}
+
+void MainWindow::figureMoved()
+{
+    tv->resizeColumnsToContents();
 }

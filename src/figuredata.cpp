@@ -112,4 +112,5 @@ void FigureData::figureMove(const QPoint &move)
         }
         break;
     }
+    emit figureMoved();
 }
