@@ -189,4 +189,5 @@ void Model::insertFigureData(QByteArray datagram)
     m_nData.append( new FigureData(datagram) );
     endInsertRows();
     emit insertedFigureEvent(m_nData.last());
+    connect(m_nData.last(),SIGNAL(figureMoved()),SIGNAL(figureMoved()));
 }

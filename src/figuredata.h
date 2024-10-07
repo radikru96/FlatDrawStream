@@ -39,7 +39,8 @@ public:
 
 public slots:
     void figureMove(const QPoint&);
-
+signals:
+    void figureMoved();
 };
 
 Q_DECLARE_METATYPE(FigureData*)

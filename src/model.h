@@ -40,6 +40,7 @@ signals:
     void insertedFigureEvent(FigureData*);
     void visibleChanged(const QModelIndex&);
     void rowRemoved(const QModelIndex&);
+    void figureMoved();
 };
 
 #endif // MODEL_H
