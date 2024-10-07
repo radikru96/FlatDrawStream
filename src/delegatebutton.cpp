@@ -6,8 +6,6 @@
 #include "model.h"
 #include "defines.h"
 
-// #include <QDebug>
-
 DelegateButton::DelegateButton(QObject *parent)
     : QItemDelegate{parent}
 {}

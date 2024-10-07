@@ -41,7 +41,7 @@ MainWindow::MainWindow(QWidget *parent)
     setMinimumSize(160, 160);
     resize(480, 320);
 
-    connect(model, SIGNAL(insertedFigureEvent(FigureData)), fv, SLOT(addItemEvent(FigureData)) );
+    connect(model, SIGNAL(insertedFigureEvent(FigureData*)), fv, SLOT(addItemEvent(FigureData*)) );
     connect(model, SIGNAL(visibleChanged(QModelIndex)), fv, SLOT(repaintEvent(QModelIndex)) );
     connect(model, SIGNAL(rowRemoved(QModelIndex)), fv, SLOT(repaintEvent(QModelIndex)) );
 }

@@ -12,7 +12,6 @@ class FigureData : public QObject
 {
     Q_OBJECT
 private:
-
     static quint64 count;
 
     const quint64 id;
@@ -22,7 +21,6 @@ private:
     QVector<QPoint> *points;
 
 public:
-
     FigureData(QFigureType type, QColor *color, QVector<QPoint>* points);
     FigureData(QByteArray &data);
 
@@ -38,6 +36,9 @@ public:
     void setType(const QFigureType &newType);
     void setColor(const QColor &newColor);
     void setPoints(QVector<QPoint> *newPoints);
+
+public slots:
+    void figureMove(const QPoint&);
 
 };
 

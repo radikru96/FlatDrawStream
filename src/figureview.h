@@ -15,15 +15,12 @@ public:
     explicit FigureView(QWidget *parent = nullptr);
     void setModel(Model *model);
 
-private:
-    void addItem(const FigureData &fd);
-
 public slots:
-    void addItemEvent(const FigureData &fd);
+    void addItemEvent(FigureData *fd);
     void repaintEvent(const QModelIndex &topLeft);
 
 protected:
-    QGraphicsScene *scene = new QGraphicsScene();
+    QGraphicsScene *scene = new QGraphicsScene(this);
     Model *model = nullptr;
     QVector<FigureItem*> *item;
 
