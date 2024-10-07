@@ -4,33 +4,32 @@
 #include <QColor>
 #include <QVector>
 #include <QPoint>
+#include <QGraphicsSceneMouseEvent>
 
-FigureItem::FigureItem(const QFigureType &type, const QColor &color, QVector<QPoint> *points, QGraphicsItem *parent)
-    : QGraphicsItem(parent), type(type), color(color)
+FigureItem::FigureItem(FigureData *fd, QGraphicsItem *parent)
+    : QGraphicsItem(parent), fd(fd), type(fd->getType()), color(fd->getColor())
 {
-    for ( auto i: qAsConst(*points)) {
+    for ( auto i: qAsConst( *fd->getPoints() )) {
         this->points.append(i);
     }
 }
 
 QRectF FigureItem::boundingRect() const
 {
-    if (color != QColor(Qt::transparent)){
-        switch (type) {
-        case QFigureType::Rect:
-            if (points.size() >= 2)
-                return QRectF( points[0], points[1]+points[0] );
-            break;
-        case QFigureType::Ellipse:
-            if (points.size() >= 2)
-                return QRectF(QRect( QPoint(points[0].x()-points[1].x()
-                                           ,points[0].y()-points[1].y() )
-                                    ,QSize(points[1].x()*2, points[1].y()*2) ));
-            break;
-        default:
-            return getBoundingRect();
-            break;
-        }
+    switch (type) {
+    case QFigureType::Rect:
+        if (points.size() >= 2)
+            return QRectF( points[0], points[1]+points[0] );
+        break;
+    case QFigureType::Ellipse:
+        if (points.size() >= 2)
+            return QRectF(QRect( QPoint(points[0].x()-points[1].x()
+                                       ,points[0].y()-points[1].y() )
+                                ,QSize(points[1].x()*2, points[1].y()*2) ));
+        break;
+    default:
+        return getBoundingRect();
+        break;
     }
     return QRectF();
 }
@@ -57,6 +56,22 @@ QRectF FigureItem::getBoundingRect() const
 void FigureItem::setColor(const QColor &newColor)
 {
     color = newColor;
+}
+
+void FigureItem::mousePressEvent(QGraphicsSceneMouseEvent *e)
+{
+    moveData = new QPoint( e->scenePos().toPoint().rx(), e->scenePos().toPoint().ry() );
+    QGraphicsItem::mousePressEvent(e);
+}
+
+void FigureItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *e)
+{
+    moveData->setX( e->scenePos().toPoint().x() - moveData->x() );
+    moveData->setY( e->scenePos().toPoint().y() - moveData->y() );
+    QGraphicsItem::mouseReleaseEvent(e);
+    fd->figureMove(*moveData);
+    delete moveData;
+    moveData = nullptr;
 }
 
 void FigureItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)

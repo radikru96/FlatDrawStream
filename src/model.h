@@ -37,7 +37,7 @@ private:
 public slots:
     void insertFigureData(QByteArray);
 signals:
-    void insertedFigureEvent(const FigureData&);
+    void insertedFigureEvent(FigureData*);
     void visibleChanged(const QModelIndex&);
     void rowRemoved(const QModelIndex&);
 };

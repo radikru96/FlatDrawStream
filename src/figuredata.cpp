@@ -98,3 +98,18 @@ void FigureData::setPoints(QVector<QPoint> *newPoints)
 {
     points = newPoints;
 }
+
+void FigureData::figureMove(const QPoint &move)
+{
+    switch (type) {
+    case Rect:
+    case Ellipse:
+        points->first() += move;
+        break;
+    default:
+        for ( QPoint &i: *points) {
+            i += move;
+        }
+        break;
+    }
+}

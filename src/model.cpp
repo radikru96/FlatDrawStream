@@ -10,8 +10,6 @@
 #include <QColor>
 #include <QButtonGroup>
 
-// #include <QDebug>
-
 Model::Model(QObject *parent)
     : QAbstractTableModel{parent}
 {
@@ -195,7 +193,7 @@ QVariant Model::getPoints(const QModelIndex &index, int role) const
 void Model::insertFigureData(QByteArray datagram)
 {
     beginInsertRows(index(this->rowCount()+1,0),this->rowCount()+1,this->rowCount()+1);
-    m_nData.append( new FigureData(datagram));
+    m_nData.append( new FigureData(datagram) );
     endInsertRows();
-    emit insertedFigureEvent(*m_nData.last());
+    emit insertedFigureEvent(m_nData.last());
 }
